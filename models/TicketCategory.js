@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const TicketCategorySchema = new mongoose.Schema({
   ticketType: {
     type: String,
-    enum: ['adult', 'kids', 'concession'],
     required: [true, 'Please provide ticketType'],
     maxlength: 25,
+    trim: true,
   },
   fastTrack: {
     type: Boolean,
@@ -14,6 +14,12 @@ const TicketCategorySchema = new mongoose.Schema({
   price: {
     type: Number,
     required: [true, 'Please provide price'],
+    validate: {
+      validator: function (value) {
+        return value > 0;
+      },
+      message: 'Price should be greater than 0.',
+    },
   },
   description: {
     type: String,
