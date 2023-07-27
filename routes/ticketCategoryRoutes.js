@@ -12,7 +12,10 @@ const {
   updateTicketType,
 } = require('../controllers/ticketCategoryController');
 
-router.route('/').get(getAllTicketTypes).post(createTicketType);
+router
+  .route('/')
+  .get(getAllTicketTypes)
+  .post(authenticateUser, authorizePermission('admin'), createTicketType);
 
 router.route('/:id').patch(updateTicketType);
 

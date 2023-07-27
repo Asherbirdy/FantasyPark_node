@@ -3,7 +3,10 @@ const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 
 const getAllTicketTypes = async (req, res) => {
-  res.send('getAllTicketTypeInfo');
+  const getAllTicketTypes = await TicketCategory.find({});
+  res
+    .status(StatusCodes.OK)
+    .json({ getAllTicketTypes, count: getAllTicketTypes.length });
 };
 
 const createTicketType = async (req, res) => {
@@ -29,12 +32,18 @@ const createTicketType = async (req, res) => {
   res.status(StatusCodes.CREATED).json(ticket);
 };
 
-const deleteTicketType = async (req, res) => {
-  res.send('deleteTicketType');
+const updateTicketType = async (req, res) => {
+  const { price, description } = req.body;
+  const ticketType = await TicketCategory.findOne({ _id: req.params.id });
+  ticketType.price = price;
+  ticketType.description = description;
+
+  await ticketType.save();
+  res.status(StatusCodes.OK).json({ ticketType });
 };
 
-const updateTicketType = async (req, res) => {
-  res.send('updateTicketType');
+const deleteTicketType = async (req, res) => {
+  res.send('deleteTicketType');
 };
 
 module.exports = {
