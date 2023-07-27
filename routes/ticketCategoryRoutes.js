@@ -17,8 +17,8 @@ router
   .get(getAllTicketTypes)
   .post(authenticateUser, authorizePermission('admin'), createTicketType);
 
-router.route('/:id').patch(updateTicketType);
-
-router.route('/:id').delete(deleteTicketType);
+router
+  .route('/:id')
+  .patch(authenticateUser, authorizePermission('admin'), updateTicketType);
 
 module.exports = router;

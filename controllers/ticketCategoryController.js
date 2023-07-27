@@ -4,9 +4,10 @@ const CustomError = require('../errors');
 
 const getAllTicketTypes = async (req, res) => {
   const getAllTicketTypes = await TicketCategory.find({});
-  res
-    .status(StatusCodes.OK)
-    .json({ getAllTicketTypes, count: getAllTicketTypes.length });
+  res.status(StatusCodes.OK).json({
+    allTicketsInfo: getAllTicketTypes,
+    count: getAllTicketTypes.length,
+  });
 };
 
 const createTicketType = async (req, res) => {
@@ -42,13 +43,8 @@ const updateTicketType = async (req, res) => {
   res.status(StatusCodes.OK).json({ ticketType });
 };
 
-const deleteTicketType = async (req, res) => {
-  res.send('deleteTicketType');
-};
-
 module.exports = {
   getAllTicketTypes,
   createTicketType,
-  deleteTicketType,
   updateTicketType,
 };
