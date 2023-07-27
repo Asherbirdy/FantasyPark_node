@@ -7,7 +7,26 @@ const getAllTicketTypes = async (req, res) => {
 };
 
 const createTicketType = async (req, res) => {
-  res.send('createTicketType');
+  const { ticketType, fastTrack, price, description } = req.body;
+
+  if (!ticketType || !price) {
+    throw new CustomError.BadRequestError('Please provide ticketType, price');
+  }
+
+  const ticketAlreadyExist = await TicketCategory.findOne({
+    ticketType,
+    fastTrack,
+  });
+
+  if (ticketAlreadyExist) {
+    throw new CustomError.BadRequestError(
+      `ticketType:${ticketType}  fastTrack:${fastTrack} is already exist!`
+    );
+  }
+
+  const ticket = await TicketCategory.create(req.body);
+
+  res.status(StatusCodes.CREATED).json(ticket);
 };
 
 const deleteTicketType = async (req, res) => {
