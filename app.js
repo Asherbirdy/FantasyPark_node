@@ -7,11 +7,13 @@ const app = express();
 // Rest of the package
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+// const cors = require('cors');
 // Database
 const connectDB = require('./db/connect');
 
 // routers
 const authRouter = require('./routes/authRoutes');
+const userRouter = require('./routes/userRoutes');
 
 // Middleware
 const notFoundMiddleware = require('./middleware/not-found');
@@ -19,7 +21,7 @@ const errorHandlerrMiddleware = require('./middleware/error-handler');
 app.use(morgan('tiny'));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
-
+// app.use(cors);
 app.get('/', (req, res) => {
   res.send('Fantasy API');
 });
@@ -30,6 +32,7 @@ app.get('/api/v1', (req, res) => {
 });
 
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/users', userRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerrMiddleware);
