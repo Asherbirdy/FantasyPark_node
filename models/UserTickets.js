@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const User = require('../models/User');
 const TicketCategory = require('../models/TicketCategory');
 
-const UsersTicketsSchema = new mongoose.Schema(
+const UserTicketsSchema = new mongoose.Schema(
   {
     ticketCategoryId: {
       type: mongoose.Types.ObjectId,
@@ -16,6 +16,10 @@ const UsersTicketsSchema = new mongoose.Schema(
         message:
           'Invalid status value. Status must be one of "unuse", "used", "expired", or "refund',
       },
+      required: true,
+    },
+    purchaseDate: {
+      type: Date,
       required: true,
     },
     statusDate: {
@@ -35,4 +39,4 @@ const UsersTicketsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('UsersTickets', UsersTicketsSchema);
+module.exports = mongoose.model('UsersTickets', UserTicketsSchema);
