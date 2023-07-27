@@ -14,7 +14,9 @@ const connectDB = require('./db/connect');
 // routers
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
-const ticketCategory = require('./routes/ticketCategoryRoutes');
+const ticketCategoryRouter = require('./routes/ticketCategoryRoutes');
+const orderRouter = require('./routes/orderRoutes');
+
 // Middleware
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerrMiddleware = require('./middleware/error-handler');
@@ -33,7 +35,8 @@ app.get('/api/v1', (req, res) => {
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/ticketCategory', ticketCategory);
+app.use('/api/v1/ticketCategory', ticketCategoryRouter);
+app.use('/api/v1/order', orderRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerrMiddleware);
