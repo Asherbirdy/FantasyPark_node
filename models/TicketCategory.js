@@ -15,6 +15,10 @@ const TicketCategorySchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Please provide price'],
   },
+  description: {
+    type: String,
+    maxlength: 1000,
+  },
 });
 
 module.exports = mongoose.model('TicketCategory', TicketCategorySchema);
