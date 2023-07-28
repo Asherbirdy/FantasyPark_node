@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
-const TicketCategory = require('../models/TicketCategory');
 
 const UserTicketsSchema = new mongoose.Schema(
   {
@@ -26,13 +25,13 @@ const UserTicketsSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    qrcode: {
-      type: String,
-      required: true,
-    },
     userId: {
       type: mongoose.Types.ObjectId,
       ref: 'User',
+      required: true,
+    },
+    ticketDate: {
+      type: Date,
       required: true,
     },
   },
