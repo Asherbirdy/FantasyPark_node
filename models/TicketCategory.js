@@ -21,6 +21,11 @@ const TicketCategorySchema = new mongoose.Schema({
       message: 'Price should be greater than 0.',
     },
   },
+  active: {
+    type: Boolean,
+    required: [true, 'Please provide active'],
+    default: true,
+  },
   description: {
     type: String,
     maxlength: 1000,
