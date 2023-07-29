@@ -4,13 +4,21 @@ const CustomError = require('../errors');
 const UserTickets = require('../models/UserTickets');
 const TicketCategory = require('../models/TicketCategory');
 const Order = require('../models/Order');
+
 const createTicketOrder = async (req, res) => {
+  /* 
+  測試：
+
+  */
+
   // 如果是空值：-- 完成
   if (!req.body || !Array.isArray(req.body) || req.body.length === 0) {
     throw new CustomError.BadRequestError('Please provide values');
   }
 
   //票種必須是現在打開中的：true / false
+  // ticketId不能有相同的
+  // 9/31 不可以訂票
 
   // 他必須是這個 API 結構 -- 完成
   function hasRequiredProperties(arr) {
@@ -39,11 +47,24 @@ const createTicketOrder = async (req, res) => {
     );
   }
 
+  // 檢查日期是否是正確格式
+  // function isValidDate(dateString) {
+  //   const date = new Date(dateString);
+  //   return date instanceof Date && !isNaN(date);
+  // }
+
+  // // 在處理 req.body 之前檢查日期的有效性
+  // for (const ticket of req.body) {
+  //   if (!isValidDate(ticket.ticketDate)) {
+  //     throw new CustomError.BadRequestError(
+  //       `ticketDate: ${ticket.ticketDate} is not available!`
+  //     );
+  //   }
+  // }
   // 先看是否是今天，如果是今天，三點之前才能訂今天的票，如不是今天則看日期是否是明天以後 -- 完成
   function isToday(date) {
     const today = new Date();
     const parsedDate = new Date(date);
-
     return parsedDate.toDateString() === today.toDateString();
   }
 
@@ -51,7 +72,6 @@ const createTicketOrder = async (req, res) => {
     const now = new Date();
     const todayThreePM = new Date(now);
     todayThreePM.setHours(15, 0, 0, 0);
-
     return now < todayThreePM;
   }
 
@@ -63,16 +83,18 @@ const createTicketOrder = async (req, res) => {
   }
 
   const parsedTicketDate = new Date(req.body[0].ticketDate);
-
   if (isToday(parsedTicketDate)) {
     if (!isBeforeThreePM()) {
-      throw new CustomError.BadRequestError('當日訂票只能三點以前訂！');
+      throw new CustomError.BadRequestError(
+        'Booking for the same day is only allowed before 3 PM'
+      );
     }
   } else if (!isAfterToday(parsedTicketDate)) {
-    throw new CustomError.BadRequestError('訂票日期要大於今天');
+    throw new CustomError.BadRequestError(
+      'The booking date must be later than today'
+    );
   } else {
   }
-  console.log('here2');
 
   // 如果有 unuse 票的時間 跟 買的時間 的票不一樣 返回Error
   const unuseTicket = await UserTickets.find({
@@ -96,12 +118,11 @@ const createTicketOrder = async (req, res) => {
   const orderTicketsAmount = req.body.reduce((acc, cur) => acc + cur.amount, 0);
   if (orderTicketsAmount + unuseTicket.length > 5) {
     throw new CustomError.BadRequestError(
-      `一組帳號只能有五張票; 本次訂票${orderTicketsAmount}張;本帳號未使用票:${unuseTicket.length}張`
+      `Each account can only have a maximum of five tickets; Unused tickets for this account: ${unuseTicket.length} tickets`
     );
   }
 
   let orderTickets = [];
-  let total = 0;
 
   for (const ticket of req.body) {
     const dbTicket = await TicketCategory.findOne({
@@ -116,36 +137,38 @@ const createTicketOrder = async (req, res) => {
 
     const { _id, ticketType, fastTrack, price, description } = dbTicket;
     const singleOrderItem = {
-      product: _id,
+      ticketId: _id,
+      price, // 因為要看當時的價格，價格可能會調整，但是當時買的價格不能
       amount: ticket.amount,
-      price,
+      ticketInfo: `${ticketType} fastTrack:${fastTrack}`,
     };
 
-    orderTickets = [...orderTickets, singleOrderItem];
+    orderTickets.push(singleOrderItem);
   }
 
   const userTickets = [];
+  let total = 0;
   for (const ticket of orderTickets) {
+    total += ticket.price * ticket.amount;
     for (let i = 0; i < ticket.amount; i++) {
       userTickets.push({
-        ticketDate: req.body[0].ticketDate,
-        ticketId: ticket.product,
+        ticketId: ticket.ticketId,
+        price: ticket.price,
+        ticketInfo: ticket.ticketInfo,
       });
     }
   }
 
-  userTickets.forEach(async (ticket, i) => {
-    await UserTickets.create({
-      ticketCategoryId: ticket.ticketId,
-      status: 'unuse',
-      purchaseDate: new Date(),
-      statusDate: new Date(),
-      userId: req.user.userId,
-      ticketDate: ticket.ticketDate,
-    });
+  const createOrder = await Order.create({
+    purchaseDate: new Date(),
+    ticket_date: req.body[0].ticketDate,
+    total: total,
+    orderTickets: userTickets,
+    status: 'paid',
+    userId: req.user.userId,
   });
 
-  res.status(StatusCodes.CREATED).json(userTickets);
+  res.status(StatusCodes.CREATED).json(createOrder);
 };
 
 const refundTicket = async (req, res) => {
