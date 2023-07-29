@@ -1,8 +1,4 @@
 const mongoose = require('mongoose');
-const User = require('../models/User');
-const TicketCategory = require('../models/TicketCategory');
-const UserTickets = require('../models/UserTickets'); // 引入時使用完整檔案名稱
-const validator = require('validator');
 
 const SingleOrderSchema = new mongoose.Schema({
   ticketId: {
@@ -24,12 +20,6 @@ const OrderSchema = new mongoose.Schema({
   },
   ticket_date: {
     type: Date,
-    validate: {
-      validator: function (value) {
-        return validator.isDate(value);
-      },
-      message: 'Invalid ticket_date. Please provide a valid date.',
-    },
     required: true,
   },
   orderTickets: [SingleOrderSchema],
