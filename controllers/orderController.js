@@ -204,4 +204,11 @@ const refundTicket = async (req, res) => {
   res.send('refund ticket order!!');
 };
 
-module.exports = { createTicketOrder, refundTicket };
+const getUserOrderHistory = async (req, res) => {
+  const UserOrderHistory = await Order.find({
+    userId: req.user.userId,
+  });
+  res.status(StatusCodes.OK).json(UserOrderHistory);
+};
+
+module.exports = { createTicketOrder, refundTicket, getUserOrderHistory };
