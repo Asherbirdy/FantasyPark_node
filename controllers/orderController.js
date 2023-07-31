@@ -6,36 +6,49 @@ const TicketCategory = require('../models/TicketCategory');
 const Order = require('../models/Order');
 const dayjs = require('dayjs');
 
+const {
+  validateObjectsRequiredProperties,
+  isValidDateFormat,
+} = require('../utlis');
+
 const createTicketOrder = async (req, res) => {
-  // 如果是空值：-- 完成
+  /* 一組帳號 只能買五張票 */
+
+  // req.body 不能是空值：
   if (!req.body || !Array.isArray(req.body) || req.body.length === 0) {
     throw new CustomError.BadRequestError('Please provide values');
   }
 
-  // 他必須是這個 API 結構 -- 完成
-  function hasRequiredProperties(arr) {
-    return arr.every(
-      (item) =>
-        item.hasOwnProperty('ticketDate') &&
-        item.hasOwnProperty('ticketId') &&
-        item.hasOwnProperty('amount')
-    );
-  }
-
-  if (!hasRequiredProperties(req.body)) {
-    throw new CustomError.BadRequestError(
-      "Every Object's keys need to have ticketDate,ticketId ,amount"
-    );
-  }
+  // 他必須是這個 API 結構
+  validateObjectsRequiredProperties(req.body, [
+    'ticketDate',
+    'ticketId',
+    'amount',
+  ]);
 
   // 票種必須是現在 active 打開：true / false
   const allTicketCategory = await TicketCategory.find({});
-  console.log(allTicketCategory);
+  function checkTicketsActiveStatus(ticketsToCheck, tickets) {
+    const result = [];
+    for (const ticketData of ticketsToCheck) {
+      const { ticketId } = ticketData;
+      const ticket = tickets.find((t) => t._id.toString() === ticketId);
+      if (!ticket || !ticket.active) {
+        result.push(ticketId);
+      }
+    }
+    return result;
+  }
 
-  // ticketId不能有相同的
+  const notActiveTicket = checkTicketsActiveStatus(req.body, allTicketCategory);
+
+  if (notActiveTicket.length > 0) {
+    throw new CustomError.BadRequestError(`${notActiveTicket} is not active`);
+  }
+
+  // req.body ticketId不能有相同的
   function hasDuplicateTicketIds(jsonData) {
     const ticketIdsSet = new Set();
-
     for (const entry of jsonData) {
       const { ticketId } = entry;
       if (ticketIdsSet.has(ticketId)) {
@@ -43,7 +56,6 @@ const createTicketOrder = async (req, res) => {
       }
       ticketIdsSet.add(ticketId);
     }
-
     return false; // No duplicate ticketId found
   }
 
@@ -62,26 +74,8 @@ const createTicketOrder = async (req, res) => {
     );
   }
 
-  // 檢查日期是否是正確格式
-  function isValidDate(year, month, day) {
-    const date = new Date(year, month - 1, day);
-    return (
-      date.getFullYear() === year &&
-      date.getMonth() === month - 1 &&
-      date.getDate() === day
-    );
-  }
-
-  function isInputDateValid(inputDate) {
-    const [year, month, day] = inputDate.split('-').map(Number);
-    return isValidDate(year, month, day);
-  }
-
-  if (!isInputDateValid(req.body[0].ticketDate)) {
-    throw new CustomError.BadRequestError(
-      `ticketDate: ${req.body[0].ticketDate} is not valid Date!`
-    );
-  }
+  // 檢查JSON中的是否是“YYYY-MM-DD”
+  isValidDateFormat(req.body[0].ticketDate);
 
   // 先看是否是今天，如果是今天，三點之前才能訂今天的票，如不是今天則看日期是否是明天以後 -- 完成
   function isToday(date) {
@@ -118,7 +112,7 @@ const createTicketOrder = async (req, res) => {
   } else {
   }
 
-  // 如果有 unuse 票的時間 跟 買的時間 的票不一樣 返回Error
+  // 如果有 unuse 票的時間 跟 買的時間 的票不一樣 返回Error --- 同時間
   const unuseTicket = await UserTickets.find({
     userId: req.user.userId,
     status: 'unuse',
@@ -145,12 +139,10 @@ const createTicketOrder = async (req, res) => {
   }
 
   let orderTickets = [];
-
   for (const ticket of req.body) {
     const ticketCategory = await TicketCategory.findOne({
       _id: ticket.ticketId,
     });
-    console.log(ticketCategory);
 
     if (!ticketCategory) {
       throw new CustomError.NotFoundError(
@@ -175,7 +167,7 @@ const createTicketOrder = async (req, res) => {
     total += ticket.price * ticket.amount;
     for (let i = 0; i < ticket.amount; i++) {
       userTickets.push({
-        ticketId: ticket.ticketId,
+        ticketCategoryId: ticket.ticketId,
         price: ticket.price,
         ticketInfo: ticket.ticketInfo,
       });
@@ -186,10 +178,24 @@ const createTicketOrder = async (req, res) => {
     purchaseDate: new Date(),
     ticket_date: req.body[0].ticketDate,
     total: total,
-    orderTickets: userTickets,
+    orderTickets: userTickets, // 使用 userTicketsIds 替代之前的 userTickets
     status: 'paid',
     userId: req.user.userId,
   });
+
+  const forUsersTickets = createOrder.orderTickets.map((ticket) => {
+    return {
+      _id: ticket._id,
+      ticketCategoryId: ticket.ticketCategoryId,
+      status: 'unuse',
+      purchaseDate: new Date(),
+      statusDate: new Date(),
+      userId: req.user.userId,
+      ticketDate: req.body[0].ticketDate,
+    };
+  });
+
+  await UserTickets.insertMany(forUsersTickets);
 
   res.status(StatusCodes.CREATED).json(createOrder);
 };

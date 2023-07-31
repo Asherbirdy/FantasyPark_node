@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const dayjs = require('dayjs');
 
 const SingleOrderSchema = new mongoose.Schema({
-  ticketId: {
+  ticketCategoryId: {
     type: mongoose.Schema.ObjectId,
     ref: 'Product',
     required: true,
