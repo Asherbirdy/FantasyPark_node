@@ -34,11 +34,11 @@ const createTicketType = async (req, res) => {
 };
 
 const updateTicketType = async (req, res) => {
-  const { price, description } = req.body;
+  const { price, description, active } = req.body;
   const ticketType = await TicketCategory.findOne({ _id: req.params.id });
   ticketType.price = price;
   ticketType.description = description;
-
+  ticketType.active = active;
   await ticketType.save();
   res.status(StatusCodes.OK).json({ ticketType });
 };
