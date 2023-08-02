@@ -1,7 +1,7 @@
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const UsersTickets = require('../models/UserTickets');
-
+const TicketAuthHistory = require('../models/TicketAuthHistory');
 const ticketAuth = async (req, res) => {
   const { id } = req.params;
 
@@ -28,7 +28,14 @@ const ticketAuth = async (req, res) => {
   userTicket.status = 'used';
   userTicket.statusDate = new Date();
   userTicket.save();
-  res.status(StatusCodes.OK).json({ msg: '票券通過，可以入園', userTicket });
+
+  await TicketAuthHistory.create({
+    date: new Date(),
+    userId: userTicket.userId,
+    ticketId: userTicket._id,
+    ticketCategoryId: userTicket.ticketCategoryId,
+  });
+  res.status(StatusCodes.OK).json({ msg: '票券通過，可以入園' });
 };
 
 const ticketAuthHistory = async (req, res) => {
