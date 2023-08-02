@@ -7,8 +7,9 @@ const {
 
 const {
   getCurrentUserUnuseTicket,
+  refundUserTicket,
 } = require('../controllers/userTicketsController');
 
 router.route('/').get(authenticateUser, getCurrentUserUnuseTicket);
-
+router.route('/refund/:id').post(authenticateUser, refundUserTicket);
 module.exports = router;

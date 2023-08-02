@@ -27,7 +27,7 @@ const OrderSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: {
-      values: ['unpaid', 'paid', 'failed', 'refunded'],
+      values: ['paid', 'failed', 'refund'],
       message:
         'Invalid status value. Accepted values are unpaid, paid, failed, or refunded',
     },
