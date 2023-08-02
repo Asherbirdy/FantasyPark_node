@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-
+const User = require('../models/User');
+const TicketCategory = require('../models/TicketCategory');
 const TicketAuthHistory = new mongoose.Schema({
   date: {
     type: Date,
@@ -17,7 +18,7 @@ const TicketAuthHistory = new mongoose.Schema({
   },
   ticketCategoryId: {
     type: mongoose.Schema.ObjectId,
-    ref: 'Product',
+    ref: 'TicketCategory',
     required: true,
   },
 });

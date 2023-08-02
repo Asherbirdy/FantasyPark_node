@@ -2,6 +2,9 @@ const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const UsersTickets = require('../models/UserTickets');
 const TicketAuthHistory = require('../models/TicketAuthHistory');
+
+const TicketCategory = require('../models/TicketCategory');
+
 const ticketAuth = async (req, res) => {
   const { id } = req.params;
 
@@ -39,7 +42,10 @@ const ticketAuth = async (req, res) => {
 };
 
 const ticketAuthHistory = async (req, res) => {
-  res.send('ticketAuthHistory');
+  const getTicketAuthHistory = await TicketAuthHistory.find({})
+    .populate('userId', 'name email -_id')
+    .populate('ticketCategoryId', '-_id fastTrack ticketType');
+  res.send(getTicketAuthHistory);
 };
 
 module.exports = { ticketAuth, ticketAuthHistory };
