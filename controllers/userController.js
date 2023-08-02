@@ -43,6 +43,9 @@ const updateUser = async (req, res) => {
 };
 
 const updateUserPassword = async (req, res) => {
+  if (req.user.role === 'admin') {
+    throw new CustomError.UnauthenticatedError('admin can not be change!!!');
+  }
   const { oldPassword, newPassword } = req.body;
   if (!oldPassword || !newPassword) {
     throw new CustomError.BadRequestError('Please provide both values');
