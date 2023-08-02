@@ -5,6 +5,7 @@ const express = require('express');
 const app = express();
 
 // Rest of the package
+const checkExpiredTickets = require('./tasks/ checkExpiredTicket');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 // const cors = require('cors');
@@ -35,6 +36,8 @@ app.get('/api/v1', (req, res) => {
   console.log(req.signedCookies);
   res.send('Fantasy API');
 });
+
+checkExpiredTickets.start();
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
