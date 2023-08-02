@@ -318,7 +318,7 @@
           "response": []
         },
         {
-          "name": "Ticket Auth History  (未完成)",
+          "name": "Ticket Auth History",
           "request": {
             "method": "GET",
             "header": [],
