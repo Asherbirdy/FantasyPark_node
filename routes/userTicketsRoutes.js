@@ -11,5 +11,5 @@ const {
 } = require('../controllers/userTicketsController');
 
 router.route('/').get(authenticateUser, getCurrentUserUnuseTicket);
-router.route('/refund/:id').post(authenticateUser, refundUserTicket);
+router.route('/refund/:id').get(authenticateUser, refundUserTicket);
 module.exports = router;

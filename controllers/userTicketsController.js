@@ -27,8 +27,7 @@ const refundUserTicket = async (req, res) => {
     throw new CustomError.NotFoundError('Ticket not found');
   }
 
-  const getUserIdbyString = refundTicket.userId.toString();
-
+  const getUserIdbyString = { userId: refundTicket.userId.toString() };
   checkPersmission(req.user, getUserIdbyString);
 
   if (refundTicket.status !== 'unuse') {
