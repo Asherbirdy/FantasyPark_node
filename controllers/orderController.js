@@ -200,10 +200,6 @@ const createTicketOrder = async (req, res) => {
   res.status(StatusCodes.CREATED).json(createOrder);
 };
 
-const refundTicket = async (req, res) => {
-  res.send('refund ticket order!!');
-};
-
 const getUserOrderHistory = async (req, res) => {
   const UserOrderHistory = await Order.find({
     userId: req.user.userId,
@@ -211,4 +207,4 @@ const getUserOrderHistory = async (req, res) => {
   res.status(StatusCodes.OK).json(UserOrderHistory);
 };
 
-module.exports = { createTicketOrder, refundTicket, getUserOrderHistory };
+module.exports = { createTicketOrder, getUserOrderHistory };

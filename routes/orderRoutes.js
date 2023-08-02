@@ -6,12 +6,11 @@ const {
 } = require('../middleware/authentication');
 const {
   createTicketOrder,
-  refundTicket,
   getUserOrderHistory,
 } = require('../controllers/orderController');
 
 router.route('/').post(authenticateUser, createTicketOrder);
-router.route('/refundTicket').post(authenticateUser, refundTicket);
+
 router.route('/').get(authenticateUser, getUserOrderHistory);
 
 module.exports = router;
