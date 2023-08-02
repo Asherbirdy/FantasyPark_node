@@ -29,6 +29,9 @@ const showCurrentUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
+  if (req.user.role === 'admin') {
+    throw new CustomError.UnauthenticatedError('admin can not be change!!!');
+  }
   const { email, name } = req.body;
   if (!email || !name) {
     throw new CustomError.BadRequestError('Please provide all value');
