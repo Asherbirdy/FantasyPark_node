@@ -15,7 +15,6 @@ const getCurrentUserUnuseTicket = async (req, res) => {
 };
 
 // 產生訂單 再去裡面找票卷，產生訂單，再去改他的 userTickets 裏的 status
-// 先不管日期之類
 const refundUserTicket = async (req, res) => {
   const { id: refundTicketId } = req.params;
 
@@ -36,21 +35,17 @@ const refundUserTicket = async (req, res) => {
     );
   }
 
-  const userTickets = [
-    {
+  // 產生訂單 修改狀態 ( 需要改total 和 price )
+  const createRefundOrder = await Order.create({
+    purchaseDate: new Date(),
+    ticket_date: refundTicket.ticketDate,
+    total: refundTicket.ticketCategoryId.price,
+    orderTickets: {
       _id: refundTicketId,
       ticketCategoryId: refundTicket.ticketCategoryId._id,
       price: refundTicket.ticketCategoryId.price,
       ticketInfo: `${refundTicket.ticketCategoryId.ticketType} fastTrack:${refundTicket.ticketCategoryId.fastTrack}`,
     },
-  ];
-
-  // 產生訂單 修改狀態
-  const createRefundOrder = await Order.create({
-    purchaseDate: new Date(),
-    ticket_date: refundTicket.ticketDate,
-    total: refundTicket.ticketCategoryId.price,
-    orderTickets: userTickets,
     status: 'refund',
     userId: req.user.userId,
   });
