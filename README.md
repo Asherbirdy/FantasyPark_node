@@ -17,6 +17,17 @@ Initail value : https://fanstypark.onrender.com/api/v1
 Current value：https://fanstypark.onrender.com/api/v1
 ```
 
+如果想在本機使用需要新增.env檔案
+
+.env
+
+```json
+# local 資料庫：
+MONGO_URL=mongodb://admin:admin@127.0.0.1:27017
+JWT_SECRET=<設定自己的參數>
+JWT_LIFETIME=30d
+```
+
 ### 權限：admin(所有權限) / user（一般）
 
 ```jsx
