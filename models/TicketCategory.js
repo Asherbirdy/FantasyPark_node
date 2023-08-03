@@ -24,7 +24,6 @@ const TicketCategorySchema = new mongoose.Schema({
   active: {
     type: Boolean,
     required: [true, 'Please provide active'],
-    default: true,
   },
   description: {
     type: String,
