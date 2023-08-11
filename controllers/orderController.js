@@ -86,9 +86,9 @@ const createTicketOrder = async (req, res) => {
 
   function isBeforeThreePM() {
     const now = new Date();
-    const todayThreePM = new Date(now);
-    todayThreePM.setHours(15, 0, 0, 0);
-    return now < todayThreePM;
+    const todayNinePM = new Date(now);
+    todayNinePM.setHours(21, 0, 0, 0);
+    return now < todayNinePM;
   }
 
   function isAfterToday(date) {
@@ -102,7 +102,7 @@ const createTicketOrder = async (req, res) => {
   if (isToday(parsedTicketDate)) {
     if (!isBeforeThreePM()) {
       throw new CustomError.BadRequestError(
-        'Booking for the same day is only allowed before 3 PM'
+        'Booking for the same day is only allowed before 9 PM'
       );
     }
   } else if (!isAfterToday(parsedTicketDate)) {
@@ -183,7 +183,6 @@ const createTicketOrder = async (req, res) => {
     userId: req.user.userId,
   });
 
-  console.log(createOrder.orderTickets);
   const forUsersTickets = createOrder.orderTickets.map((ticket) => {
     return {
       _id: ticket._id,
