@@ -183,6 +183,7 @@ const createTicketOrder = async (req, res) => {
     userId: req.user.userId,
   });
 
+  console.log(createOrder.orderTickets);
   const forUsersTickets = createOrder.orderTickets.map((ticket) => {
     return {
       _id: ticket._id,
@@ -192,6 +193,7 @@ const createTicketOrder = async (req, res) => {
       statusDate: new Date(),
       userId: req.user.userId,
       ticketDate: req.body[0].ticketDate,
+      currentPurchasePrice: ticket.price,
     };
   });
 
