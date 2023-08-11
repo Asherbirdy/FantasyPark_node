@@ -1,12 +1,11 @@
 const cron = require('node-cron');
-const mongoose = require('mongoose'); // Import Mongoose if not already imported
 const UserTickets = require('../models/UserTickets');
 
 // Step 2: Define a Mongoose model for 'UserTickets' collection (if not already defined)
 
 // Your existing 'findExpiredTicket' cron job
 const checkExpiredTickets = cron.schedule(
-  '0 0 * * *',
+  '0 21 * * *',
   async () => {
     try {
       const today = new Date();
