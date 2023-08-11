@@ -4,6 +4,7 @@ const TicketCategory = require('../models/TicketCategory');
 const Order = require('../models/Order');
 const UsersTickets = require('../models/UserTickets');
 const { checkPersmission } = require('../utlis');
+const mongoose = require('mongoose');
 const getCurrentUserUnuseTicket = async (req, res) => {
   const getUnuseTicket = await UsersTickets.find({
     userId: req.user.userId,
@@ -35,15 +36,29 @@ const refundUserTicket = async (req, res) => {
     );
   }
 
+  // 找出當時訂單的價格
+  const currentOrderPrice = await Order.aggregate([
+    { $match: { userId: mongoose.Types.ObjectId(req.user.userId) } },
+    { $unwind: '$orderTickets' },
+    {
+      $match: {
+        'orderTickets._id': mongoose.Types.ObjectId(refundTicketId),
+        'orderTickets.ticketCategoryId': refundTicket.ticketCategoryId._id,
+      },
+    },
+    { $project: { _id: 0, price: '$orderTickets.price' } },
+  ]);
+  console.log(currentOrderPrice[0].price);
+
   // 產生訂單 修改狀態 ( 需要改total 和 price )
   const createRefundOrder = await Order.create({
     purchaseDate: new Date(),
     ticket_date: refundTicket.ticketDate,
-    total: refundTicket.ticketCategoryId.price,
+    total: currentOrderPrice[0].price,
     orderTickets: {
       _id: refundTicketId,
       ticketCategoryId: refundTicket.ticketCategoryId._id,
-      price: refundTicket.ticketCategoryId.price,
+      price: currentOrderPrice[0].price,
       ticketInfo: `${refundTicket.ticketCategoryId.ticketType} fastTrack:${refundTicket.ticketCategoryId.fastTrack}`,
     },
     status: 'refund',
