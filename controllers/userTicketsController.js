@@ -76,14 +76,45 @@ const refundUserTicket = async (req, res) => {
 };
 
 const getUnuseUseTickets = async (req, res) => {
-  const getUseUnuseTickets = await UsersTickets.find({
-    userId: req.user.userId,
-    status: { $in: ['unuse', 'used'] },
-  });
+  /*
+找目前unuse的票:
+  有unuse->去判斷 是否是今天。
+	  如果是今天：抓今天的unuse和used
+	  如果不是今天：顯示全部unuse票
 
-  res
-    .status(StatusCodes.OK)
-    .json({ getUseUnuseTickets, count: getUseUnuseTickets.length });
+  沒有任何unuse票->去判斷 是不是今天的票用完
+	  如果今天有使用票：顯示今天used的票
+	  如果今天沒有使用票：回傳error msg:使用者沒票 趕緊去買票
+*/
+
+  // // 找今天的票
+  // const findUnuseTicket = await UsersTickets.find({
+  //   userId: req.user.userId,
+  //   status: 'unuse',
+  // });
+  // const todayDate = new Date().toISOString().split('T')[0] + 'T00:00:00.000Z';
+  // // 如果沒有unuse的票，就找看看有沒有今天用完的票
+  // if (findUnuseTicket.length === 0) {
+  //   const findTodayUsedTickets = await UsersTickets.find({
+  //     userId: req.user.userId,
+  //     status: 'used',
+  //     ticketDate: todayDate,
+  //   });
+  //   if (!findTodayUsedTickets) {
+  //     throw new CustomError.NotFoundError('沒有任何票');
+  //   }
+  //   res
+  //     .status(StatusCodes.OK)
+  //     .json({ findTodayUsedTickets, count: findTodayUsedTickets.length });
+  // } else {
+  //   res
+  //     .status(StatusCodes.OK)
+  //     .json({ findUnuseTicket, count: findUnuseTicket.length });
+  // }
+  // res
+  //   .status(StatusCodes.OK)
+  //   .json({ getUseUnuseTickets, count: getUseUnuseTickets.length });
+  res.send('getUnuseUseTickets');
 };
 
 module.exports = {
