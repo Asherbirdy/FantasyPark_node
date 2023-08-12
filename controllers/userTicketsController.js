@@ -12,7 +12,9 @@ const getCurrentUserUnuseTicket = async (req, res) => {
   })
     .select('-purchaseDate -statusDate -__v -createdAt -updatedAt -userId')
     .populate('ticketCategoryId', 'ticketType fastTrack');
-  res.status(StatusCodes.OK).json(getUnuseTicket);
+  res
+    .status(StatusCodes.OK)
+    .json({ getUnuseTicket, count: getUnuseTicket.length });
 };
 
 // 產生訂單 再去裡面找票卷，產生訂單，再去改他的 userTickets 裏的 status
@@ -48,7 +50,6 @@ const refundUserTicket = async (req, res) => {
     },
     { $project: { _id: 0, price: '$orderTickets.price' } },
   ]);
-  console.log(currentOrderPrice[0].price);
 
   // 產生訂單 修改狀態 ( 需要改total 和 price )
   const createRefundOrder = await Order.create({
@@ -74,4 +75,19 @@ const refundUserTicket = async (req, res) => {
   res.status(StatusCodes.OK).json({ createRefundOrder, refundTicket });
 };
 
-module.exports = { getCurrentUserUnuseTicket, refundUserTicket };
+const getUnuseUseTickets = async (req, res) => {
+  const getUseUnuseTickets = await UsersTickets.find({
+    userId: req.user.userId,
+    status: { $in: ['unuse', 'used'] },
+  });
+
+  res
+    .status(StatusCodes.OK)
+    .json({ getUseUnuseTickets, count: getUseUnuseTickets.length });
+};
+
+module.exports = {
+  getCurrentUserUnuseTicket,
+  refundUserTicket,
+  getUnuseUseTickets,
+};
