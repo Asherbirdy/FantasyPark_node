@@ -34,6 +34,10 @@ const UserTicketsSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    currentPurchasePrice: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
