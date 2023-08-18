@@ -1,10 +1,10 @@
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-const TicketCategory = require('../models/TicketCategory');
 const Order = require('../models/Order');
 const UsersTickets = require('../models/UserTickets');
 const { checkPersmission } = require('../utlis');
 const mongoose = require('mongoose');
+
 const getCurrentUserUnuseTicket = async (req, res) => {
   const getUnuseTicket = await UsersTickets.find({
     userId: req.user.userId,
@@ -12,7 +12,9 @@ const getCurrentUserUnuseTicket = async (req, res) => {
   })
     .select('-purchaseDate -statusDate -__v -createdAt -updatedAt -userId')
     .populate('ticketCategoryId', 'ticketType fastTrack');
-  res.status(StatusCodes.OK).json(getUnuseTicket);
+  res
+    .status(StatusCodes.OK)
+    .json({ getUnuseTicket, count: getUnuseTicket.length });
 };
 
 // 產生訂單 再去裡面找票卷，產生訂單，再去改他的 userTickets 裏的 status
@@ -48,7 +50,6 @@ const refundUserTicket = async (req, res) => {
     },
     { $project: { _id: 0, price: '$orderTickets.price' } },
   ]);
-  console.log(currentOrderPrice[0].price);
 
   // 產生訂單 修改狀態 ( 需要改total 和 price )
   const createRefundOrder = await Order.create({
@@ -74,4 +75,39 @@ const refundUserTicket = async (req, res) => {
   res.status(StatusCodes.OK).json({ createRefundOrder, refundTicket });
 };
 
-module.exports = { getCurrentUserUnuseTicket, refundUserTicket };
+const getUnuseUseTickets = async (req, res) => {
+  //  找 unuse 的票
+  const findUnuseTicket = await UsersTickets.find({
+    userId: req.user.userId,
+    status: 'unuse',
+  });
+
+  // 今天的 string
+  const todayDate = new Date().toISOString().split('T')[0] + 'T00:00:00.000Z';
+  const ticketDateAsString = findUnuseTicket[0]?.ticketDate.toISOString();
+
+  // 找今天的unuse used票
+  const findTodayUnuseTicket = await UsersTickets.find({
+    userId: req.user.userId,
+    status: { $in: ['unuse', 'used'] },
+    ticketDate: todayDate,
+  });
+
+  if (findUnuseTicket.length > 0 && ticketDateAsString === todayDate) {
+    // 如果今天有票，顯示 今天 的 unuse票 和 used票
+    res
+      .status(StatusCodes.OK)
+      .json({ findTodayUnuseTicket, count: findTodayUnuseTicket.length });
+  } else {
+    // 如果其他天有票或是沒票，顯示其他天的 unused票 或 空值
+    res
+      .status(StatusCodes.OK)
+      .json({ findUnuseTicket, count: findUnuseTicket.length });
+  }
+};
+
+module.exports = {
+  getCurrentUserUnuseTicket,
+  refundUserTicket,
+  getUnuseUseTickets,
+};
