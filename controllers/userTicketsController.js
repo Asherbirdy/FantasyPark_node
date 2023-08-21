@@ -93,13 +93,17 @@ const getUnuseUseTickets = async (req, res) => {
   const ticketDateAsString = findTodayUnuseTicket[0]?.ticketDate.toISOString();
 
   if (findTodayUnuseTicket.length > 0 && ticketDateAsString === todayDate) {
-    res
-      .status(StatusCodes.OK)
-      .json({ findTodayUnuseTicket, count: findTodayUnuseTicket.length });
+    res.status(StatusCodes.OK).json({
+      findTodayUnuseTicket,
+      count: findTodayUnuseTicket.length,
+      ticketDate: findTodayUnuseTicket[0]?.ticketDate,
+    });
   } else {
-    res
-      .status(StatusCodes.OK)
-      .json({ findUnuseTicket, count: findUnuseTicket.length });
+    res.status(StatusCodes.OK).json({
+      findUnuseTicket,
+      count: findUnuseTicket.length,
+      ticketDate: findUnuseTicket[0]?.ticketDate,
+    });
   }
 };
 
