@@ -12,6 +12,7 @@ const getCurrentUserUnuseTicket = async (req, res) => {
   })
     .select('-purchaseDate -statusDate -__v -createdAt -updatedAt -userId')
     .populate('ticketCategoryId', 'ticketType fastTrack');
+
   res
     .status(StatusCodes.OK)
     .json({ getUnuseTicket, count: getUnuseTicket.length });
@@ -91,7 +92,13 @@ const getUnuseUseTickets = async (req, res) => {
     userId: req.user.userId,
     status: { $in: ['unuse', 'used'] },
     ticketDate: todayDate,
-  });
+  })
+    .populate({
+      path: 'ticketCategoryId',
+      select: '_id ticketType fastTrack price', // 选择要包含的字段，用空格分隔
+    })
+    .select('-createdAt -updatedAt -__v -userId -statusDate') // 排除不想要的字段
+    .lean();
 
   if (findUnuseTicket.length > 0 && ticketDateAsString === todayDate) {
     // 如果今天有票，顯示 今天 的 unuse票 和 used票
