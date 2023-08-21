@@ -112,6 +112,20 @@ const createTicketOrder = async (req, res) => {
   } else {
   }
 
+  const todayDate = new Date().toISOString().split('T')[0] + 'T00:00:00.000Z';
+  //如果今天unuse和used加起來有五張也不能購買
+  const findTodayUnuseTicket = await UserTickets.find({
+    userId: req.user.userId,
+    status: { $in: ['unuse', 'used'] },
+    ticketDate: todayDate,
+  });
+
+  if (findTodayUnuseTicket.length + req.body.length > 5) {
+    throw new CustomError.BadRequestError(
+      'Today, the number of tickets used and purchased cannot exceed five.'
+    );
+  }
+
   // 如果有 unuse 票的時間 跟 買的時間 的票不一樣 返回Error --- 同時間
   const unuseTicket = await UserTickets.find({
     userId: req.user.userId,
