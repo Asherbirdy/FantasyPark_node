@@ -77,40 +77,40 @@ const refundUserTicket = async (req, res) => {
 };
 
 const getUnuseUseTickets = async (req, res) => {
-  //  找 unuse 的票
-  const findUnuseTicket = await UsersTickets.find({
+  const findUnuseTicket = await getFilteredTickets({
     userId: req.user.userId,
     status: 'unuse',
   });
 
-  // 今天的 string
   const todayDate = new Date().toISOString().split('T')[0] + 'T00:00:00.000Z';
-  const ticketDateAsString = findUnuseTicket[0]?.ticketDate.toISOString();
 
-  // 找今天的unuse used票
-  const findTodayUnuseTicket = await UsersTickets.find({
+  const findTodayUnuseTicket = await getFilteredTickets({
     userId: req.user.userId,
     status: { $in: ['unuse', 'used'] },
     ticketDate: todayDate,
-  })
-    .populate({
-      path: 'ticketCategoryId',
-      select: '_id ticketType fastTrack price',
-    })
-    .select('-createdAt -updatedAt -__v -userId -statusDate') // 排除不想要的字段
-    .lean();
+  });
 
-  if (findUnuseTicket.length > 0 && ticketDateAsString === todayDate) {
-    // 如果今天有票，顯示 今天 的 unuse票 和 used票
+  const ticketDateAsString = findTodayUnuseTicket[0]?.ticketDate.toISOString();
+
+  if (findTodayUnuseTicket.length > 0 && ticketDateAsString === todayDate) {
     res
       .status(StatusCodes.OK)
       .json({ findTodayUnuseTicket, count: findTodayUnuseTicket.length });
   } else {
-    // 如果其他天有票或是沒票，顯示其他天的 unused票 或 空值
     res
       .status(StatusCodes.OK)
       .json({ findUnuseTicket, count: findUnuseTicket.length });
   }
+};
+
+const getFilteredTickets = async (filter) => {
+  return await UsersTickets.find(filter)
+    .populate({
+      path: 'ticketCategoryId',
+      select: '_id ticketType fastTrack price',
+    })
+    .select('-createdAt -updatedAt -__v -userId -statusDate -purchaseDate')
+    .lean();
 };
 
 module.exports = {
