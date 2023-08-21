@@ -46,6 +46,24 @@ const createTicketOrder = async (req, res) => {
     throw new CustomError.BadRequestError(`${notActiveTicket} is not active`);
   }
 
+  // ammount不能是0
+  function validateAmounts(data) {
+    // 遍历数据，检查是否有任何 "amount" 值小于等于零
+    for (const item of data) {
+      if (item.amount <= 0) {
+        // 将检查条件修改为小于等于零
+        return false; // 如果有任何一个 "amount" 值小于等于零，返回 false
+      }
+    }
+    return true; // 如果所有 "amount" 值都大于零，返回 true
+  }
+
+  const inputData = req.body;
+
+  if (!validateAmounts(inputData)) {
+    throw new CustomError.BadRequestError(`amount must be greater than 0`);
+  }
+
   // req.body ticketId不能有相同的
   function hasDuplicateTicketIds(jsonData) {
     const ticketIdsSet = new Set();
@@ -110,6 +128,20 @@ const createTicketOrder = async (req, res) => {
       'The booking date must be later than today'
     );
   } else {
+  }
+
+  const todayDate = new Date().toISOString().split('T')[0] + 'T00:00:00.000Z';
+  //如果今天unuse和used加起來有五張也不能購買
+  const findTodayUnuseTicket = await UserTickets.find({
+    userId: req.user.userId,
+    status: { $in: ['unuse', 'used'] },
+    ticketDate: todayDate,
+  });
+
+  if (findTodayUnuseTicket.length + req.body.length > 5) {
+    throw new CustomError.BadRequestError(
+      'Today, the number of tickets used and purchased cannot exceed five.'
+    );
   }
 
   // 如果有 unuse 票的時間 跟 買的時間 的票不一樣 返回Error --- 同時間
