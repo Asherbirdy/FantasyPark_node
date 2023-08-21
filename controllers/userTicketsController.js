@@ -95,7 +95,7 @@ const getUnuseUseTickets = async (req, res) => {
   })
     .populate({
       path: 'ticketCategoryId',
-      select: '_id ticketType fastTrack price', // 选择要包含的字段，用空格分隔
+      select: '_id ticketType fastTrack price',
     })
     .select('-createdAt -updatedAt -__v -userId -statusDate') // 排除不想要的字段
     .lean();
