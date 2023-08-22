@@ -215,10 +215,16 @@ const createTicketOrder = async (req, res) => {
     userId: req.user.userId,
   });
 
-  const userInfo = await Order.findById(createOrder._id).populate({
-    path: 'userId',
-    select: '-password -__v -_id -role',
-  });
+  const userInfo = await Order.findById(createOrder._id)
+    .populate({
+      path: 'userId',
+      select: '-password -__v -_id -role',
+    })
+    .populate({
+      path: 'orderTickets.ticketCategoryId',
+      model: 'TicketCategory',
+      select: '-_id -__v -active -description -price',
+    });
 
   // 給 userTicket collection
   const forUsersTickets = createOrder.orderTickets.map((ticket) => {
