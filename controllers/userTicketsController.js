@@ -109,8 +109,13 @@ const getFilteredTickets = async (filter) => {
     .lean();
 };
 
+const getUserUsedRefundExpiredTicketHistory = async (req, res) => {
+  res.send('getUserUsedRefundExpiredTicketHistory');
+};
+
 module.exports = {
   getCurrentUserUnuseTicket,
   refundUserTicket,
   getUnuseUseTickets,
+  getUserUsedRefundExpiredTicketHistory,
 };
