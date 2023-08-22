@@ -215,6 +215,12 @@ const createTicketOrder = async (req, res) => {
     userId: req.user.userId,
   });
 
+  const userInfo = await Order.findById(createOrder._id).populate({
+    path: 'userId',
+    select: '-password -__v -_id -role',
+  });
+
+  // 給 userTicket collection
   const forUsersTickets = createOrder.orderTickets.map((ticket) => {
     return {
       _id: ticket._id,
@@ -230,7 +236,7 @@ const createTicketOrder = async (req, res) => {
 
   await UserTickets.insertMany(forUsersTickets);
 
-  res.status(StatusCodes.CREATED).json(createOrder);
+  res.status(StatusCodes.CREATED).json(userInfo);
 };
 
 const getUserOrderHistory = async (req, res) => {
