@@ -110,7 +110,16 @@ const getFilteredTickets = async (filter) => {
 };
 
 const getUserUsedRefundExpiredTicketHistory = async (req, res) => {
-  res.send('getUserUsedRefundExpiredTicketHistory');
+  const ticketHistroy = await UsersTickets.find({
+    userId: req.user.userId,
+    status: { $in: ['expired', 'refund', 'used'] },
+  })
+    .select(
+      'ticketDate status ticketCategoryId currentPurchasePrice statusDate'
+    )
+    .sort({ statusDate: -1 });
+  console.log(ticketHistroy.length);
+  res.status(StatusCodes.OK).json(ticketHistroy);
 };
 
 module.exports = {
