@@ -8,9 +8,7 @@ const register = async (req, res) => {
 
   const emailAlreadyExist = await User.findOne({ email });
   if (emailAlreadyExist) {
-    throw new CustomError.BadRequestError(
-      `${email} / this email already exist!`
-    );
+    throw new CustomError.BadRequestError(`${email} 已經被使用！`);
   }
   const isFirstAccount = (await User.countDocuments({})) === 0;
   const role = isFirstAccount ? 'admin' : 'user';
@@ -25,18 +23,18 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    throw new CustomError.BadRequestError('Please provide email and password');
+    throw new CustomError.BadRequestError('請提供帳號和密碼！');
   }
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    throw new CustomError.UnauthenticatedError('錯誤帳號密碼');
   }
 
   const isPasswordCorrect = await user.comparePassword(password);
 
   if (!isPasswordCorrect) {
-    throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    throw new CustomError.UnauthenticatedError('錯誤帳號密碼');
   }
 
   const tokenUser = createTokenUser(user);
@@ -49,7 +47,7 @@ const logout = async (req, res) => {
     httpOnly: true,
     expires: new Date(Date.now() + 5 * 1000),
   });
-  res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
+  res.status(StatusCodes.OK).json({ msg: '成功登出！' });
 };
 
 module.exports = { register, login, logout };
