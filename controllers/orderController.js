@@ -5,6 +5,14 @@ const UserTickets = require('../models/UserTickets');
 const TicketCategory = require('../models/TicketCategory');
 const Order = require('../models/Order');
 const dayjs = require('dayjs');
+const { checkPersmission, convertToTaiwanTime } = require('../utlis');
+
+// 現在台灣日期：2023-08-23T08:19:28.935Z
+const todayTaiwanDate = convertToTaiwanTime(new Date());
+
+// 把現在台灣時間 2023-08-23T08:19:28.935Z => 2023-08-23T00:00:00.000Z
+const todayDate =
+  todayTaiwanDate.toISOString().split('T')[0] + 'T00:00:00.000Z';
 
 const {
   validateObjectsRequiredProperties,
@@ -102,7 +110,7 @@ const createTicketOrder = async (req, res) => {
     return parsedDate.toDateString() === today.toDateString();
   }
 
-  function isBeforeThreePM() {
+  function isBeforeNinePM() {
     const now = new Date();
     const todayNinePM = new Date(now);
     todayNinePM.setHours(21, 0, 0, 0);
@@ -118,7 +126,7 @@ const createTicketOrder = async (req, res) => {
 
   const parsedTicketDate = new Date(req.body[0].ticketDate);
   if (isToday(parsedTicketDate)) {
-    if (!isBeforeThreePM()) {
+    if (!isBeforeNinePM()) {
       throw new CustomError.BadRequestError(
         'Booking for the same day is only allowed before 9 PM'
       );
@@ -130,7 +138,9 @@ const createTicketOrder = async (req, res) => {
   } else {
   }
 
-  const todayDate = new Date().toISOString().split('T')[0] + 'T00:00:00.000Z';
+  const todayDate =
+    todayTaiwanDate.toISOString().split('T')[0] + 'T00:00:00.000Z';
+
   //如果今天unuse和used加起來有五張也不能購買
   const findTodayUnuseTicket = await UserTickets.find({
     userId: req.user.userId,
@@ -207,7 +217,7 @@ const createTicketOrder = async (req, res) => {
   }
 
   const createOrder = await Order.create({
-    purchaseDate: new Date(),
+    purchaseDate: todayTaiwanDate,
     ticket_date: req.body[0].ticketDate,
     total: total,
     orderTickets: userTickets, // 使用 userTicketsIds 替代之前的 userTickets
@@ -232,8 +242,8 @@ const createTicketOrder = async (req, res) => {
       _id: ticket._id,
       ticketCategoryId: ticket.ticketCategoryId,
       status: 'unuse',
-      purchaseDate: new Date(),
-      statusDate: new Date(),
+      purchaseDate: todayTaiwanDate,
+      statusDate: todayTaiwanDate,
       userId: req.user.userId,
       ticketDate: req.body[0].ticketDate,
       currentPurchasePrice: ticket.price,
