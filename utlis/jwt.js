@@ -8,7 +8,7 @@ const createJWT = ({ payload }) => {
 };
 
 // 認證 JWT
-const isTokenValid = ({ token }) => jwt.verify(token, process.env.JWT_SECRET);
+const isTokenValid = (token) => jwt.verify(token, process.env.JWT_SECRET);
 
 // 將使用者資料 存在 cookie // user是tokenUser
 const attachCookieToResponse = ({ res, user, refreshToken }) => {
