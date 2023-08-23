@@ -81,4 +81,8 @@ const logout = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
 };
 
-module.exports = { register, login, logout };
+const authCookie = async (req, res) => {
+  res.send('authCookie');
+};
+
+module.exports = { register, login, logout, authCookie };
