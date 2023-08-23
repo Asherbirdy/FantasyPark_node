@@ -24,11 +24,15 @@ const ticketAuth = async (req, res) => {
   }
 
   const ticketDate = new Date(userTicket.ticketDate);
-  const currentDate = todayTaiwanDate;
+  const currentDate = new Date();
   const isNotToday =
     ticketDate.getFullYear() !== currentDate.getFullYear() ||
     ticketDate.getMonth() !== currentDate.getMonth() ||
     ticketDate.getDate() !== currentDate.getDate();
+
+  if (isNotToday) {
+    throw new CustomError.BadRequestError(`${ticketDate} is not today`);
+  }
 
   if (isNotToday) {
     throw new CustomError.BadRequestError(`${ticketDate} 不是今天`);
