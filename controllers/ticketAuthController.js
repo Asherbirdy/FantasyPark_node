@@ -3,7 +3,14 @@ const CustomError = require('../errors');
 const UsersTickets = require('../models/UserTickets');
 const TicketAuthHistory = require('../models/TicketAuthHistory');
 
-const TicketCategory = require('../models/TicketCategory');
+const { checkPersmission, convertToTaiwanTime } = require('../utlis');
+
+// 現在台灣日期：2023-08-23T08:19:28.935Z
+const todayTaiwanDate = convertToTaiwanTime(new Date());
+
+// 把現在台灣時間 2023-08-23T08:19:28.935Z => 2023-08-23T00:00:00.000Z
+const todayDate =
+  todayTaiwanDate.toISOString().split('T')[0] + 'T00:00:00.000Z';
 
 const ticketAuth = async (req, res) => {
   const { id } = req.params;
@@ -17,7 +24,7 @@ const ticketAuth = async (req, res) => {
   }
 
   const ticketDate = new Date(userTicket.ticketDate);
-  const currentDate = new Date();
+  const currentDate = todayTaiwanDate;
   const isNotToday =
     ticketDate.getFullYear() !== currentDate.getFullYear() ||
     ticketDate.getMonth() !== currentDate.getMonth() ||
@@ -29,11 +36,11 @@ const ticketAuth = async (req, res) => {
 
   // 都正確則執行：
   userTicket.status = 'used';
-  userTicket.statusDate = new Date();
+  userTicket.statusDate = todayTaiwanDate;
   userTicket.save();
 
   await TicketAuthHistory.create({
-    date: new Date(),
+    date: todayTaiwanDate,
     userId: userTicket.userId,
     ticketId: userTicket._id,
     ticketCategoryId: userTicket.ticketCategoryId,

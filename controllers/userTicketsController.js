@@ -2,8 +2,15 @@ const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const Order = require('../models/Order');
 const UsersTickets = require('../models/UserTickets');
-const { checkPersmission } = require('../utlis');
+const { checkPersmission, convertToTaiwanTime } = require('../utlis');
 const mongoose = require('mongoose');
+
+// 現在台灣日期：2023-08-23T08:19:28.935Z
+const todayTaiwanDate = convertToTaiwanTime(new Date());
+
+// 把現在台灣時間 2023-08-23T08:19:28.935Z => 2023-08-23T00:00:00.000Z
+const todayDate =
+  todayTaiwanDate.toISOString().split('T')[0] + 'T00:00:00.000Z';
 
 const getCurrentUserUnuseTicket = async (req, res) => {
   const getUnuseTicket = await UsersTickets.find({
@@ -54,7 +61,7 @@ const refundUserTicket = async (req, res) => {
 
   // 產生訂單 修改狀態 ( 需要改total 和 price )
   const createRefundOrder = await Order.create({
-    purchaseDate: new Date(),
+    purchaseDate: todayTaiwanDate,
     ticket_date: refundTicket.ticketDate,
     total: currentOrderPrice[0].price,
     orderTickets: {
@@ -69,7 +76,7 @@ const refundUserTicket = async (req, res) => {
 
   // 改變票的狀態和日期
   refundTicket.status = 'refund';
-  refundTicket.statusDate = new Date();
+  refundTicket.statusDate = todayTaiwanDate;
 
   await refundTicket.save(); // Save the updated ticket
 
@@ -81,8 +88,6 @@ const getUnuseUseTickets = async (req, res) => {
     userId: req.user.userId,
     status: 'unuse',
   });
-
-  const todayDate = new Date().toISOString().split('T')[0] + 'T00:00:00.000Z';
 
   const findTodayUnuseTicket = await getFilteredTickets({
     userId: req.user.userId,
