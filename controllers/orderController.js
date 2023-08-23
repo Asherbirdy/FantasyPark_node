@@ -24,7 +24,7 @@ const createTicketOrder = async (req, res) => {
 
   // req.body 不能是空值：
   if (!req.body || !Array.isArray(req.body) || req.body.length === 0) {
-    throw new CustomError.BadRequestError('Please provide values');
+    throw new CustomError.BadRequestError('不能是空值');
   }
 
   // 他必須是這個 API 結構
@@ -51,7 +51,7 @@ const createTicketOrder = async (req, res) => {
   const notActiveTicket = checkTicketsActiveStatus(req.body, allTicketCategory);
 
   if (notActiveTicket.length > 0) {
-    throw new CustomError.BadRequestError(`${notActiveTicket} is not active`);
+    throw new CustomError.BadRequestError(`${notActiveTicket} 未啟動(active)`);
   }
 
   // ammount不能是0
@@ -69,7 +69,7 @@ const createTicketOrder = async (req, res) => {
   const inputData = req.body;
 
   if (!validateAmounts(inputData)) {
-    throw new CustomError.BadRequestError(`amount must be greater than 0`);
+    throw new CustomError.BadRequestError(`amount 不能是0`);
   }
 
   // req.body ticketId不能有相同的
@@ -86,7 +86,7 @@ const createTicketOrder = async (req, res) => {
   }
 
   if (hasDuplicateTicketIds(req.body)) {
-    throw new CustomError.BadRequestError(`duplicate ticketId`);
+    throw new CustomError.BadRequestError(`重複 ticketId`);
   }
 
   // 檢查陣列中每個 ticketDate 是否都相同 -- 完成
@@ -95,9 +95,7 @@ const createTicketOrder = async (req, res) => {
   });
 
   if (!areAllDatesSame) {
-    throw new CustomError.BadRequestError(
-      'The booking dates must be the same!'
-    );
+    throw new CustomError.BadRequestError('訂票日期必須一樣!');
   }
 
   // 檢查JSON中的是否是“YYYY-MM-DD”
@@ -127,14 +125,10 @@ const createTicketOrder = async (req, res) => {
   const parsedTicketDate = new Date(req.body[0].ticketDate);
   if (isToday(parsedTicketDate)) {
     if (!isBeforeNinePM()) {
-      throw new CustomError.BadRequestError(
-        'Booking for the same day is only allowed before 9 PM'
-      );
+      throw new CustomError.BadRequestError('當天的購票只允許在晚上9點之前');
     }
   } else if (!isAfterToday(parsedTicketDate)) {
-    throw new CustomError.BadRequestError(
-      'The booking date must be later than today'
-    );
+    throw new CustomError.BadRequestError('不能訂今天以前的票！');
   } else {
   }
 
@@ -150,7 +144,7 @@ const createTicketOrder = async (req, res) => {
 
   if (findTodayUnuseTicket.length + req.body.length > 5) {
     throw new CustomError.BadRequestError(
-      'Today, the number of tickets used and purchased cannot exceed five.'
+      '今天和今天所使用和購買的票數不能超過五張'
     );
   }
 

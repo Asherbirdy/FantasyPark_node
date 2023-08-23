@@ -19,7 +19,7 @@ const ticketAuth = async (req, res) => {
 
   if (userTicket.status !== 'unuse') {
     throw new CustomError.UnauthenticatedError(
-      `Tickets is ${userTicket.status} , cannot be use!`
+      `票券狀態是 ${userTicket.status} , 不能使用!`
     );
   }
 
@@ -31,7 +31,7 @@ const ticketAuth = async (req, res) => {
     ticketDate.getDate() !== currentDate.getDate();
 
   if (isNotToday) {
-    throw new CustomError.BadRequestError(`${ticketDate} is not today`);
+    throw new CustomError.BadRequestError(`${ticketDate} 不是今天`);
   }
 
   // 都正確則執行：
