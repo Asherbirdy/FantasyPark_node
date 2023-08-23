@@ -30,4 +30,9 @@ function isValidDateFormat(dateString) {
   return;
 }
 
-module.exports = { isValidDateFormat };
+// 將UTC時間+8小時  convertToTaiwanTime(new Date())
+function convertToTaiwanTime(utcDate) {
+  return new Date(utcDate.getTime() + 8 * 60 * 60 * 1000);
+}
+
+module.exports = { isValidDateFormat, convertToTaiwanTime };
