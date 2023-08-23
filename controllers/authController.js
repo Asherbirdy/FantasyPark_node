@@ -3,6 +3,7 @@ const Token = require('../models/Token');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const { attachCookieToResponse, createTokenUser } = require('../utlis');
+const crypto = require('crypto');
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -68,10 +69,18 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  res.cookie('token', 'logout', {
+  await Token.findOneAndDelete({ user: req.user.userId });
+
+  res.cookie('accessToken', 'logout', {
     httpOnly: true,
-    expires: new Date(Date.now() + 5 * 1000),
+    expires: new Date(Date.now() + 1000),
   });
+
+  res.cookie('refreshToken', 'logout', {
+    httpOnly: true,
+    expires: new Date(Date.now() + 1000),
+  });
+
   res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
 };
 
