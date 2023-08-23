@@ -12,7 +12,7 @@ function validateObjectsRequiredProperties(arr, requiredProperties) {
 
   if (!hasAllRequiredProperties) {
     throw new CustomError.BadRequestError(
-      ` "Every Object's keys need to have ${requiredProperties}"`
+      `每筆物件屬性名必須要有 ${requiredProperties}"`
     );
   }
 }
