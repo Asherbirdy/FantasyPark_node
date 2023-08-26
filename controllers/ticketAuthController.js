@@ -40,11 +40,11 @@ const ticketAuth = async (req, res) => {
 
   // 都正確則執行：
   userTicket.status = 'used';
-  userTicket.statusDate = todayTaiwanDate;
+  userTicket.statusDate = convertToTaiwanTime(new Date());
   userTicket.save();
 
   await TicketAuthHistory.create({
-    date: todayTaiwanDate,
+    date: convertToTaiwanTime(new Date()),
     userId: userTicket.userId,
     ticketId: userTicket._id,
     ticketCategoryId: userTicket.ticketCategoryId,
@@ -55,8 +55,9 @@ const ticketAuth = async (req, res) => {
 const ticketAuthHistory = async (req, res) => {
   const getTicketAuthHistory = await TicketAuthHistory.find({})
     .populate('userId', 'name email -_id')
-    .populate('ticketCategoryId', '-_id fastTrack ticketType');
-  res.send(getTicketAuthHistory);
+    .populate('ticketCategoryId', '-_id fastTrack ticketType')
+    .sort({ date: -1 });
+  res.status(StatusCodes.OK).json(getTicketAuthHistory);
 };
 
 module.exports = { ticketAuth, ticketAuthHistory };
