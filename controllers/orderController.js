@@ -101,25 +101,31 @@ const createTicketOrder = async (req, res) => {
   // 檢查JSON中的是否是“YYYY-MM-DD”
   isValidDateFormat(req.body[0].ticketDate);
 
-  // 先看是否是今天，如果是今天，三點之前才能訂今天的票，如不是今天則看日期是否是明天以後 -- 完成
+  // 先看是否是今天，如果是今天，九點之前才能訂今天的票，如不是今天則看日期是否是明天以後 -- 完成
   function isToday(date) {
-    const today = new Date();
+    const nowTaiwan = new Date(
+      new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' })
+    );
     const parsedDate = new Date(date);
-    return parsedDate.toDateString() === today.toDateString();
+    return parsedDate.toDateString() === nowTaiwan.toDateString();
   }
 
   function isBeforeNinePM() {
-    const now = new Date();
-    const todayNinePM = new Date(now);
-    todayNinePM.setHours(21, 0, 0, 0);
-    return now < todayNinePM;
+    const nowTaiwan = new Date(
+      new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' })
+    );
+    const todayNinePMTaiwan = new Date(nowTaiwan);
+    todayNinePMTaiwan.setHours(21, 0, 0, 0);
+    return nowTaiwan < todayNinePMTaiwan;
   }
 
   function isAfterToday(date) {
-    const today = new Date();
+    const nowTaiwan = new Date(
+      new Date().toLocaleString('en-US', { timeZone: 'Asia/Taipei' })
+    );
     const parsedDate = new Date(date);
 
-    return parsedDate >= today;
+    return parsedDate >= nowTaiwan;
   }
 
   const parsedTicketDate = new Date(req.body[0].ticketDate);
