@@ -5,7 +5,7 @@ const UserTickets = require('../models/UserTickets');
 
 // Your existing 'findExpiredTicket' cron job
 const checkExpiredTickets = cron.schedule(
-  '0 21 * * *',
+  '0 0 * * *',
   async () => {
     try {
       const today = new Date();
