@@ -101,35 +101,18 @@ const createTicketOrder = async (req, res) => {
   // 檢查JSON中的是否是“YYYY-MM-DD”
   isValidDateFormat(req.body[0].ticketDate);
 
-  // 先看是否是今天，如果是今天，三點之前才能訂今天的票，如不是今天則看日期是否是明天以後 -- 完成
-  function isToday(date) {
-    const today = new Date();
-    const parsedDate = new Date(date);
-    return parsedDate.toDateString() === today.toDateString();
-  }
+  // 不能買昨天的票
+  function isBeforeToday(date) {
+    const nowTaiwan = convertToTaiwanTime(new Date());
+    nowTaiwan.setHours(0, 0, 0, 0);
 
-  function isBeforeNinePM() {
-    const now = new Date();
-    const todayNinePM = new Date(now);
-    todayNinePM.setHours(21, 0, 0, 0);
-    return now < todayNinePM;
-  }
-
-  function isAfterToday(date) {
-    const today = new Date();
-    const parsedDate = new Date(date);
-
-    return parsedDate >= today;
+    return date < nowTaiwan;
   }
 
   const parsedTicketDate = new Date(req.body[0].ticketDate);
-  if (isToday(parsedTicketDate)) {
-    if (!isBeforeNinePM()) {
-      throw new CustomError.BadRequestError('當天的購票只允許在晚上9點之前');
-    }
-  } else if (!isAfterToday(parsedTicketDate)) {
-    throw new CustomError.BadRequestError('不能訂今天以前的票！');
-  } else {
+
+  if (isBeforeToday(parsedTicketDate)) {
+    throw new CustomError.BadRequestError('不能訂昨天以前的票！');
   }
 
   const todayDate =
