@@ -122,7 +122,7 @@ const createTicketOrder = async (req, res) => {
   const findTodayUnuseTicket = await UserTickets.find({
     userId: req.user.userId,
     status: { $in: ['unuse', 'used'] },
-    ticketDate: todayDate,
+    ticketDate: convertToTaiwanTime(new Date()),
   });
 
   if (findTodayUnuseTicket.length + req.body.length > 5) {
