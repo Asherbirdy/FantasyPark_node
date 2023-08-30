@@ -194,7 +194,7 @@ const createTicketOrder = async (req, res) => {
   }
 
   const createOrder = await Order.create({
-    purchaseDate: todayTaiwanDate,
+    purchaseDate: convertToTaiwanTime(new Date()),
     ticket_date: req.body[0].ticketDate,
     total: total,
     orderTickets: userTickets, // 使用 userTicketsIds 替代之前的 userTickets
@@ -219,8 +219,8 @@ const createTicketOrder = async (req, res) => {
       _id: ticket._id,
       ticketCategoryId: ticket.ticketCategoryId,
       status: 'unuse',
-      purchaseDate: todayTaiwanDate,
-      statusDate: todayTaiwanDate,
+      purchaseDate: convertToTaiwanTime(new Date()),
+      statusDate: convertToTaiwanTime(new Date()),
       userId: req.user.userId,
       ticketDate: req.body[0].ticketDate,
       currentPurchasePrice: ticket.price,
