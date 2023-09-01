@@ -92,7 +92,9 @@ const getUnuseUseTickets = async (req, res) => {
   const findTodayUnuseTicket = await getFilteredTickets({
     userId: req.user.userId,
     status: { $in: ['unuse', 'used'] },
-    ticketDate: todayDate,
+    ticketDate:
+      convertToTaiwanTime(new Date()).toISOString().split('T')[0] +
+      'T00:00:00.000Z',
   });
 
   const ticketDateAsString = findTodayUnuseTicket[0]?.ticketDate.toISOString();
