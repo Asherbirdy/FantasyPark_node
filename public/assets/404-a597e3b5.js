@@ -1,1 +1,0 @@
-import{_ as t,r as o,o as n,c as _,a,w as r,F as s,b as c,j as l}from"./index-f70f97f4.js";const d={},u=c("div",null,"404 route 不存在",-1);function i(f,m){const e=o("router-link");return n(),_(s,null,[u,a(e,{to:"/index"},{default:r(()=>[l("回首頁")]),_:1})],64)}const x=t(d,[["render",i]]);export{x as default};
