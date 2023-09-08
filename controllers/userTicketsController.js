@@ -103,7 +103,7 @@ const getUnuseUseTickets = async (req, res) => {
     findTodayUnuseTicket.length > 0 &&
     convertToTaiwanTime(new Date()).toISOString().split('T')[0] +
       'T00:00:00.000Z' ===
-      todayDate
+      findTodayUnuseTicket[0]?.ticketDate.toISOString()
   ) {
     res.status(StatusCodes.OK).json(findTodayUnuseTicket);
   } else {
