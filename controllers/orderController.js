@@ -103,10 +103,11 @@ const createTicketOrder = async (req, res) => {
 
   // 不能買昨天的票
   function isBeforeToday(date) {
-    const nowTaiwan = convertToTaiwanTime(new Date());
-    nowTaiwan.setHours(0, 0, 0, 0);
-
-    return date < nowTaiwan;
+    const nowTaiwanDate = new Date(
+      convertToTaiwanTime(new Date()).toISOString().split('T')[0]
+    );
+    const dateWithSameDate = new Date(date.toISOString().split('T')[0]);
+    return dateWithSameDate < nowTaiwanDate;
   }
 
   const parsedTicketDate = new Date(req.body[0].ticketDate);
