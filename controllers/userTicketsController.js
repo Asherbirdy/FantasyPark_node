@@ -61,7 +61,7 @@ const refundUserTicket = async (req, res) => {
 
   // 產生訂單 修改狀態 ( 需要改total 和 price )
   const createRefundOrder = await Order.create({
-    purchaseDate: todayTaiwanDate,
+    purchaseDate: convertToTaiwanTime(new Date()),
     ticket_date: refundTicket.ticketDate,
     total: currentOrderPrice[0].price,
     orderTickets: {
@@ -76,7 +76,7 @@ const refundUserTicket = async (req, res) => {
 
   // 改變票的狀態和日期
   refundTicket.status = 'refund';
-  refundTicket.statusDate = todayTaiwanDate;
+  refundTicket.statusDate = convertToTaiwanTime(new Date());
 
   await refundTicket.save(); // Save the updated ticket
 
