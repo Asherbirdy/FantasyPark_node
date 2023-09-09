@@ -126,11 +126,14 @@ const getUserUsedRefundExpiredTicketHistory = async (req, res) => {
     userId: req.user.userId,
     status: { $in: ['expired', 'refund', 'used'] },
   })
+    .populate({
+      path: 'ticketCategoryId',
+      select: '_id ticketType fastTrack price',
+    })
     .select(
       'ticketDate status ticketCategoryId currentPurchasePrice statusDate'
     )
     .sort({ statusDate: -1 });
-  console.log(ticketHistroy.length);
   res.status(StatusCodes.OK).json(ticketHistroy);
 };
 
