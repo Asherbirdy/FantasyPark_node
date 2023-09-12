@@ -1,0 +1,1 @@
+import{_ as t,a as o,o as n,c as _,g as a,e as s,F as r,f as c,x as l}from"./index-e6eb8d31.js";const d={},u=c("div",null,"404 route 不存在",-1);function i(f,x){const e=o("router-link");return n(),_(r,null,[u,a(e,{to:"/index"},{default:s(()=>[l("回首頁")]),_:1})],64)}const p=t(d,[["render",i]]);export{p as default};

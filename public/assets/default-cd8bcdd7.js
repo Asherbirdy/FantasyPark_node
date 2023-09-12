@@ -1,1 +1,0 @@
-import{H as o,F as n}from"./Footer-ed67d5e2.js";import{_ as a,r as s,o as c,c as _,a as e,F as p}from"./index-a380e3af.js";const m={components:{Header:o,Footer:n}};function d(f,l,u,i,F,$){const t=o,r=s("router-view");return c(),_(p,null,[e(t),e(r)],64)}const H=a(m,[["render",d]]);export{H as default};
