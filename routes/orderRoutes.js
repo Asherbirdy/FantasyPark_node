@@ -4,6 +4,7 @@ const {
   authenticateUser,
   authorizePermission,
 } = require('../middleware/authentication');
+
 const {
   createTicketOrder,
   getUserOrderHistory,
