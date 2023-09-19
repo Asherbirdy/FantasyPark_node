@@ -8,6 +8,7 @@ const {
 
 const {
   createFacility,
+  showAllFacility,
   updateFacilityInfo,
   deleteFacility,
 } = require('../controllers/facilityController');
@@ -17,6 +18,13 @@ router.post(
   authenticateUser,
   authorizePermission('admin'),
   createFacility
+);
+
+router.get(
+  '/',
+  authenticateUser,
+  authorizePermission('admin'),
+  showAllFacility
 );
 
 router.patch(

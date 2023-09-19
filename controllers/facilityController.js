@@ -2,6 +2,10 @@ const { StatusCodes } = require('http-status-codes');
 
 const CustomError = require('../errors');
 
+const showAllFacility = async (req, res) => {
+  res.send('showAllFacility');
+};
+
 const createFacility = async (req, res) => {
   res.send('createFacility');
 };
@@ -15,6 +19,7 @@ const deleteFacility = async (req, res) => {
 };
 
 module.exports = {
+  showAllFacility,
   createFacility,
   updateFacilityInfo,
   deleteFacility,
