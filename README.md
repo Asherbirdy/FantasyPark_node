@@ -1,3 +1,9 @@
+### 匯入這些資料 :
+
+1. 在檔案裡的 starter資料夾 有個 Fantasy Park API Doc.postman_collection.json 可以匯入 Postman
+2. Postman :在檔案裡的 starter資料夾 有個 test.ticketcategories.json 可以匯入 mongoDB
+
+
 ### Postman Environment 設定：
 
 ```jsx
@@ -19,10 +25,7 @@ JWT_SECRET=<設定自己的參數>
 JWT_LIFETIME=30d
 ```
 
-### 匯入這些資料 :
 
-1. 在檔案裡的 starter資料夾 有個 Fantasy Park API Doc.postman_collection.json 可以匯入 Postman
-2. Postman :在檔案裡的 starter資料夾 有個 test.ticketcategories.json 可以匯入 mongoDB
 
 ### 權限：（建議第一筆註冊帳號）
 
