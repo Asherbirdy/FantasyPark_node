@@ -1,6 +1,6 @@
 ### Postman Environment 設定：
 
-```json
+```jsx
 Variable:URL
 Initail value : https://fanstypark.onrender.com/api/v1
 Current value:https://fanstypark.onrender.com/api/v1
@@ -12,7 +12,7 @@ Current value:https://fanstypark.onrender.com/api/v1
 
 新增env檔案來連接資料庫和設定JWT
 
-```json
+```jsx
 # 資料庫：
 MONGO_URL=mongodb://admin:admin@127.0.0.1:27017
 JWT_SECRET=<設定自己的參數>
