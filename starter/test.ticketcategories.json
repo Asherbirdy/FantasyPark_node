@@ -1,0 +1,42 @@
+[
+  {
+    "ticketType": "成人票",
+    "fastTrack": true,
+    "price": 1000,
+    "active": true,
+    "description": "描述ticket資訊",
+    "__v": 0
+  },
+  {
+    "ticketType": "成人票",
+    "fastTrack": false,
+    "price": 800,
+    "active": true,
+    "description": "描述ticket資訊",
+    "__v": 0
+  },
+  {
+    "ticketType": "兒童票",
+    "fastTrack": true,
+    "price": 600,
+    "active": true,
+    "description": "描述ticket資訊",
+    "__v": 0
+  },
+  {
+    "ticketType": "兒童票",
+    "fastTrack": false,
+    "price": 400,
+    "active": true,
+    "description": "描述ticket資訊",
+    "__v": 0
+  },
+  {
+    "ticketType": "優待票",
+    "fastTrack": true,
+    "price": 50,
+    "active": true,
+    "description": "描述ticket資訊",
+    "__v": 0
+  }
+]
