@@ -51,8 +51,8 @@ const login = async (req, res) => {
     }
 
     refreshToken = existingToken.refreshToken;
-    const accessTokenJWT =  attachCookieToResponse({ res, user: tokenUser, refreshToken });
-    res.status(StatusCodes.OK).json({ user: tokenUser, accessTokenJWT });
+    const token =  attachCookieToResponse({ res, user: tokenUser, refreshToken });
+    res.status(StatusCodes.OK).json({ user: tokenUser, token });
     return;
   }
   refreshToken = crypto.randomBytes(40).toString('hex');
@@ -61,9 +61,9 @@ const login = async (req, res) => {
   const userToken = { refreshToken, ip, userAgent, user: user._id };
 
   await Token.create(userToken);
-  const accessTokenJWT = attachCookieToResponse({ res, user: tokenUser, refreshToken });
-
-  res.status(StatusCodes.OK).json({ user: tokenUser, accessTokenJWT });
+  const token = attachCookieToResponse({ res, user: tokenUser, refreshToken });
+  console.log(token)
+  res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 
 const logout = async (req, res) => {
