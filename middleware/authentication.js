@@ -2,8 +2,8 @@ const CustomError = require('../errors');
 const { isTokenValid, attachCookieToResponse } = require('../utlis');
 
 const authenticateUser = async (req, res, next) => {
-  // const { refreshToken, accessToken } = req.signedCookies;
-  const { refreshToken, accessToken } = req.cookies;
+  const { refreshToken, accessToken } = req.signedCookies;
+  // const { refreshToken, accessToken } = req.cookies;
 
   try {
     if (accessToken) {
