@@ -29,6 +29,8 @@ const attachCookieToResponse = ({ res, user, refreshToken }) => {
     signed: true,
     expires: new Date(Date.now() + oneDay),
   });
+
+  return accessTokenJWT
 };
 
 module.exports = { createJWT, isTokenValid, attachCookieToResponse };
