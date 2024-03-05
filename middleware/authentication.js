@@ -3,6 +3,11 @@ const { isTokenValid, attachCookieToResponse } = require('../utlis');
 
 const authenticateUser = async (req, res, next) => {
   const { refreshToken, accessToken } = req.signedCookies;
+  
+  const authHeader = req.headers['authorization'];
+  const token = authHeader.split(' ')[1];
+
+  console.log(token)
   // const { refreshToken, accessToken } = req.cookies;
 
   try {
