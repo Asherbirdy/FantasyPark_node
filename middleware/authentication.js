@@ -21,7 +21,6 @@ const authenticateUser = async (req, res, next) => {
     }
   }
 
-
   try {
     if (token) {
       const payload = isTokenValid(token);
