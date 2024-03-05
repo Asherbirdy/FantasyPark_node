@@ -4,18 +4,18 @@ const { isTokenValid, attachCookieToResponse } = require("../utlis");
 const authenticateUser = async (req, res, next) => {
   let token = null;
   const { refreshToken, accessToken } = req.signedCookies;
+  
+  if (accessToken){ 
+    console.log('cookie的token')
+    token = accessToken
+  }
 
-  if (accessToken) {
-    console.log("cookie的token");
-    token = accessToken;
-  } else {
-    const authHeader = req.headers["authorization"];
-    const authToken = authHeader.split(" ")[1];
+  const authHeader = req.headers['authorization'];
+  const authToken = authHeader.split(' ')[1];
 
-    if (authHeader) {
-      console.log("authHeader的token");
-      token = authToken;
-    }
+  if(authHeader){
+    console.log('authHeader的token')
+    token = authToken
   }
 
   try {
