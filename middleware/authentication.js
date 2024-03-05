@@ -2,17 +2,25 @@ const CustomError = require('../errors');
 const { isTokenValid, attachCookieToResponse } = require('../utlis');
 
 const authenticateUser = async (req, res, next) => {
+  let token = null
   const { refreshToken, accessToken } = req.signedCookies;
   
-  const authHeader = req.headers['authorization'];
-  const token = authHeader.split(' ')[1];
+  if (accessToken){ 
+    console.log('cookie的token')
+    token = accessToken
+  }
 
-  console.log(token)
-  // const { refreshToken, accessToken } = req.cookies;
+  const authHeader = req.headers['authorization'];
+  const authToken = authHeader.split(' ')[1];
+
+  if(authHeader){
+    console.log('authHeader的token')
+    token = authToken
+  }
 
   try {
-    if (accessToken) {
-      const payload = isTokenValid(accessToken);
+    if (token) {
+      const payload = isTokenValid(token);
       req.user = payload.user;
       return next();
     }
