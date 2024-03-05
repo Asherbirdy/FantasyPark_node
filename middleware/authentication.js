@@ -2,22 +2,22 @@ const CustomError = require("../errors");
 const { isTokenValid, attachCookieToResponse } = require("../utlis");
 
 const authenticateUser = async (req, res, next) => {
-  console.log(process.env.PRODUCTION_ENV);
+  console.log('process.env.ENV=>',process.env.ENV);
   let token = null;
 
-  if (!process.env.PRODUCTION_ENV) {
+  if (process.env.ENV === "PROD") {
     const authHeader = req.headers["authorization"];
     if (authHeader) {
-      console.log("authHeader的token");
       token = authHeader.split(" ")[1];
+      console.log("authHeader的token",token);
     }
   } 
 
-  if(process.env.PRODUCTION_ENV){
+  if(process.env.ENV === "DEV"){
     const { refreshToken, accessToken } = req.signedCookies;
     if (accessToken) {
-      console.log("cookie的token");
       token = accessToken;
+      console.log("cookie的token",token);
     }
   }
 
