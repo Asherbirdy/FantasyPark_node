@@ -55,5 +55,6 @@ module.exports = {
   getAllTicketTypes,
   createTicketType,
   updateTicketType,
-  getActiveTicketType
+  getActiveTicketType,
+  getNonActiveTicketType
 };
