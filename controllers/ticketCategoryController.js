@@ -44,9 +44,12 @@ const updateTicketType = async (req, res) => {
 };
 
 const getActiveTicketType = async (req, res) => {
-  let { page, limit } = req.body;
+  let { page, limit } = req.query;
+  console.log("🚀 ~ getActiveTicketType ~ limit:", limit)
+  console.log("🚀 ~ getActiveTicketType ~ page:", page)
   page = parseInt(page, 10) || 1;
   limit = parseInt(limit, 10) || 10;
+  
   const skip = (page - 1) * limit;
 
   const ticketType = await TicketCategory.find({ active: true })
@@ -63,7 +66,7 @@ const getActiveTicketType = async (req, res) => {
 };
 
 const getNonActiveTicketType = async (req, res) => {
-  let { page, limit } = req.body;
+  let { page, limit } = req.query;
 
   page = parseInt(page, 10) || 1;
   limit = parseInt(limit, 10) || 10;
