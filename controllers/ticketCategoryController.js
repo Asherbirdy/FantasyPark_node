@@ -55,7 +55,7 @@ const getActiveTicketType = async (req, res) => {
   const total = await TicketCategory.countDocuments({ active: true });
 
   res.status(StatusCodes.OK).json({
-    activeTicket: ticketType,
+    data: ticketType,
     page,
     totalPages: Math.ceil(total / limit),
     totalItems: total,
@@ -75,7 +75,7 @@ const getNonActiveTicketType = async (req, res) => {
   const total = await TicketCategory.countDocuments({ active: false });
 
   res.status(StatusCodes.OK).json({
-    nonActiveTicket: ticketType,
+    data: ticketType,
     page,
     totalPages: Math.ceil(total / limit),
     totalItems: total,
