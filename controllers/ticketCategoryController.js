@@ -43,8 +43,17 @@ const updateTicketType = async (req, res) => {
   res.status(StatusCodes.OK).json({ ticketType });
 };
 
+const getActiveTicketType = async (req, res) => {
+  res.status(StatusCodes.OK).json({ msg:'getActiveTicketType' });
+};
+
+const getNonActiveTicketType = async (req, res) => {
+  res.status(StatusCodes.OK).json({ msg:'getNonActiveTicketType' });
+};
+
 module.exports = {
   getAllTicketTypes,
   createTicketType,
   updateTicketType,
+  getActiveTicketType
 };
