@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "28896a1b-9ee7-4fa3-aabf-6252d0ffc3a7",
+		"_postman_id": "e136b52d-3ebc-4e3a-8678-397f3d9f9b2d",
 		"name": "Fantasy Park API Doc",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "26884449"
+		"_exporter_id": "30033784"
 	},
 	"item": [
 		{
@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"name\":\"user\",\n\"email\":\"username@gmail.com\",\n\"password\":\"password\"}",
+							"raw": "{\"name\":\"dev\",\n\"email\":\"dev@gmail.com\",\n\"password\":\"password\"}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -43,7 +43,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\":\"asher@gmail.com\",\n    \"password\":\"password\"\n}",
+							"raw": "{\n    \"email\":\"dev@gmail.com\",\n    \"password\":\"password\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -242,6 +242,66 @@
 							],
 							"path": [
 								"ticketCategory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Active Ticket Info",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"page\":1,\n    \"limit\":10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/ticketCategory/active",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"ticketCategory",
+								"active"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All NonActive Ticket Info",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"page\":1,\n    \"limit\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/ticketCategory/nonActive",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"ticketCategory",
+								"nonActive"
 							]
 						}
 					},
