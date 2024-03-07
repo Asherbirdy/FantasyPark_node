@@ -8,14 +8,23 @@ const {
 const {
   getAllTicketTypes,
   createTicketType,
-  deleteTicketType,
   updateTicketType,
+  getActiveTicketType,
+  getNonActiveTicketType
 } = require('../controllers/ticketCategoryController');
 
 router
   .route('/')
   .get(getAllTicketTypes)
   .post(authenticateUser, authorizePermission('admin'), createTicketType);
+
+router
+  .route('/active')
+  .get(authenticateUser, authorizePermission('admin'), getActiveTicketType)
+
+router
+  .route('/nonActive')
+  .get(authenticateUser, authorizePermission('admin'), getActiveTicketType)
 
 router
   .route('/:id')
