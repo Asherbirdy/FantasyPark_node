@@ -24,7 +24,7 @@ router
 
 router
   .route('/nonActive')
-  .get(authenticateUser, authorizePermission('admin'), getActiveTicketType)
+  .get(authenticateUser, authorizePermission('admin'), getNonActiveTicketType)
 
 router
   .route('/:id')
